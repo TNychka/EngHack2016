@@ -1,2 +1,2 @@
 # EngHack2016
-WIP
+Genetic algorithm for EngHack2016
