@@ -103,7 +103,7 @@ void mouseClicked(){
   if((mouseX >= (rectxLocation) && mouseX <= rectxLocation + 100) && (mouseY >= 250 && mouseY <= 300) && DrawClicked == false){
     DrawClicked = true;
   }
-  else if((mouseX >= rectxLocation && mouseX <= (rectxLocation + 100))&&(mouseY >= 250 && mouseY <= 300)){
+  else if((mouseX >= rectxLocation && mouseX <= (rectxLocation + 100))&&(mouseY >= 250 && mouseY <= 300) && drawMe == false){
     DrawClicked = false;
   }
 <!--Start Button-->
@@ -139,7 +139,7 @@ void mouseClicked(){
   	}  
 }
 void mouseMoved(){
-	if(mouseX < window.innerWidth - 400 && drawMe == true){ //Within a certain range
+	if(mouseX < (window.innerWidth/6)*5 && drawMe == true){ //Within a certain range
   		nX = mouseX;
   		nY = mouseY;
   	}  
