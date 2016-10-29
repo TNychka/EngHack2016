@@ -175,7 +175,7 @@ function updateParticles(lines, newStartX, newStartY, newTargetX, newTargetY) {
 
 
     target = new Target(targetX, targetY);
-    if (activeGeneration.length === 0 || timeInterval > 100) {
+    if (activeGeneration.length === 0 || timeInterval > 200) {
         for (particle in activeGeneration) {
             kill(activeGeneration[particle])
         }

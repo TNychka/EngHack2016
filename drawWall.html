@@ -9,8 +9,8 @@ body {
 <script type="text/processing" data-processing-target="mycanvas">
 // Global variables
 int rectxLocation = 5*window.innerWidth/6 + (window.innerWidth/6 - 100)/2;
-boolean DrawClicked = false;
-boolean StartClicked = false;
+Boolean DrawClicked = false;
+Boolean StartClicked = false;
 function Line(x1, y1, x2, y2) {
     this.x1 = x1;
     this.y1 = y1;
@@ -25,8 +25,8 @@ int endX, endY;
 int delay = 1;
 int pStartX, pStartY;
 int pEndX , pEndY;
-boolean start = true; //Detects whether or not to start to draw
-boolean drawMe= false; //Detects whether or not to continue to draw
+Boolean start = true; //Detects whether or not to start to draw
+Boolean drawMe= false; //Detects whether or not to continue to draw
 wall = new Line();
 lines = [];
 // Setup the Processing Canvas
@@ -105,7 +105,7 @@ noStroke();
 
 
 
-if(startClicked == true){
+if(StartClicked == true){
 
 var particles = updateParticles(lines , pStartX, pStartY, pEndX , pEndY );
 
