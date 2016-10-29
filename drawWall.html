@@ -27,7 +27,7 @@ int pStartX, pStartY;
 int pEndX , pEndY;
 Boolean start = true; //Detects whether or not to start to draw
 Boolean drawMe= false; //Detects whether or not to continue to draw
-wall = new Line();
+var wall;
 lines = [];
 // Setup the Processing Canvas
 void setup(){
@@ -87,7 +87,8 @@ noStroke();
   stroke(#F7921E);
   // Draw circle
       for(int i = 0; i < lines.length(); i++){
-        line(lines[i].x1, lines[i].y1, lines[i].x2, lines[i].y2);
+        var bar = lines[i]
+        line(bar.x1, bar.y1, bar.x2, bar.y2);
       }
       if(drawMe == true){
         line( X, Y, startX, startY);
@@ -141,13 +142,11 @@ void mouseClicked(){
   } else if((mouseX >= rectxLocation && mouseX <= (rectxLocation + 100))&&(mouseY >= 250 && mouseY <= 300) && drawMe == false){
     DrawClicked = false;
   } else if((mouseX >= (rectxLocation) && mouseX <= rectxLocation + 100) && (mouseY >= 350 && mouseY <= 400) && StartClicked == false){
-      StartClicked = true;
+     StartClicked = true;
   } else if((mouseX >= rectxLocation && mouseX <= (rectxLocation + 100))&&(mouseY >= 350 && mouseY <= 400)){
-      StartClicked = false;
-  } else if(mouseX < (window.innerWidth/6)*5 && DrawClicked == true){ //Within a certain range
-  		drawMe = true;
+     StartClicked = false;
+  } else if(DrawClicked == true && mouseX < (window.innerWidth/6)*5){ //Within a certain range
   		//strokeWeight( 5 );
-  		frameRate( 15 );
  		 X = width / 2;
  		 Y = height / 2;
 	     nX = X;
