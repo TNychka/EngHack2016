@@ -145,9 +145,9 @@ function breed(generation) {
 
 function kill(particle) {
     var index = activeGeneration.indexOf(particle);
-    var part = activeGeneration.splice(index, 1);
-    part.score =scoreParticle(particle);
-    generation.push(part);
+    activeGeneration.splice(index, 1);
+    particle.score = scoreParticle(particle);
+    generation.push(particle);
 }
 
 function Target() {
@@ -163,20 +163,13 @@ function updateParticles() {
         if (activeGeneration.length === 0) {
             spawnGeneration(10);
         }
-        var timeInterval = 0;
-        while (activeGeneration.length !== 0) {
-            timeInterval++;
-            for (var i = 0; i < activeGeneration.length; i++) {
-                var particle = activeGeneration[i];
-                updateParticlePosition(particle, timeInterval);
-            }
-        }
     }
+    return activeGeneration
 }
 
 screenBoundsX = 1000;
 screenBoundsY = 1000;
-function updateParticlePosition(particle, timeInterval) {
+function updateParticlePosition(particle, timeInterval, lines) {
     var q = timeInterval;
     var index = 0;
     var vector = particle.gene[index];
@@ -196,7 +189,7 @@ function updateParticlePosition(particle, timeInterval) {
     var newY = particle.y + vector.y;
     if (activeGeneration.indexOf(particle) === -1) {
         //doesn't exist don't do anything
-    } else if (collision(particle, vector) || newX < screenBoundsX || newX > screenBoundsX || newY < screenBoundsY || newY > screenBoundsY) {
+    } else if (collision(particle, vector, lines) || newX < screenBoundsX || newX > screenBoundsX || newY < screenBoundsY || newY > screenBoundsY) {
         kill(particle);
     } else {
         particle.x = newX;
@@ -205,15 +198,7 @@ function updateParticlePosition(particle, timeInterval) {
     }
 }
 
-function Line() {
-    this.x1 = 100;
-    this.y1 = 100;
-    this.x2 = 200;
-    this.y2 = 200;
-}
-line = new Line();
-lines = [line];
-function collision(particle, vector) {
+function collision(particle, vector, lines) {
     for (i = 0; i < lines.length; i++) {
         if (line_intersects(
                 particle.x,
@@ -223,7 +208,7 @@ function collision(particle, vector) {
                 lines[i].x1,
                 lines[i].y1,
                 lines[i].x2,
-                lines[i].y2)){
+                lines[i].y2)) {
             return true;
         }
     }

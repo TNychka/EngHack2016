@@ -4,46 +4,72 @@
 float radius = 50.0;
 int X, Y;
 int nX, nY;
+int startX, startY;
+int endX, endY;
 int delay = 1;
+boolean start = true; //Detects whether or not to start to draw
+boolean drawMe= false; //Detects whether or not to continue to draw
 
 // Setup the Processing Canvas
 void setup(){
-  size( 500, 500 );
-  strokeWeight( 10 );
-  frameRate( 150 );
-  X = width / 2;
-  Y = height / 2;
-  nX = X;
-  nY = Y;  
+  size( window.innerWidth, window.innerHeight );
 }
 
 // Main draw loop
 void draw(){
   
-  radius = radius + sin( frameCount / 4 );
+ // radius = radius + sin( frameCount / 4 );
   
   // Track circle to new destination
   X+=(nX-X)/delay;
   Y+=(nY-Y)/delay;
   
   // Fill canvas grey
-  background( 100 );
+  background( 0 );
   
   // Set fill-color to blue
-  fill( 0, 121, 184 );
+  fill( 100, 121, 184 );
   
   // Set stroke-color white
-  stroke(255); 
-  
+  stroke(255,127,80);
   // Draw circle
-  ellipse( X, Y, radius, radius );                  
+  if(drawMe == true){
+  	line( X, Y, startX, startY); 
+  } else {
+  	line(endX, endY, startX, startY);
+  }
+               
 }
 
 
 // Set circle's next destination
-void mouseDragged(){
-  nX = mouseX;
-  nY = mouseY;  
+void mouseClicked(){
+	if(mouseX < window.innerWidth - 400){ //Within a certain range
+  		drawMe = true;
+  		strokeWeight( 5 );
+  		frameRate( 15 );
+ 		 X = width / 2;
+ 		 Y = height / 2;
+	     nX = X;
+ 		 nY = Y;  
+ 		 if(start == true){
+ 		 	startX = mouseX;
+ 		 	startY = mouseY;
+ 		 	start = false;
+ 		 	drawMe=true;
+ 		 } else {
+ 		 	start = true;
+ 		 	drawMe = false;
+ 		 	endX = mouseX;
+ 		 	endY = mouseY;
+ 		 }
+  	}  
+}
+void mouseMoved(){
+	if(mouseX < window.innerWidth - 400 && drawMe == true){ //Within a certain range
+  		nX = mouseX;
+  		nY = mouseY;
+  	}  
 }
 
 </script>
