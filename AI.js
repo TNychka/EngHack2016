@@ -170,8 +170,8 @@ function updateParticles(lines, startX, startY, targetX, targetY) {
     //DO NOT COMMIT
     startX = 0;
     startY = 0;
-    targetX = 500;
-    targetY = 500;
+    targetX = 1000;
+    targetY = 800;
 
 
     target = new Target(targetX, targetY);
