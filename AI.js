@@ -27,17 +27,17 @@ function spawnGeneration(size) {
             for (var z = 0; z < numberOfVectors; z++) {
                 gene.push(getRandomVector());
             }
-            generation.push(new Particle(10, gene));
+            activeGeneration.push(new Particle(10, gene));
         }
     } else {
         var geneBase = breed(generation);
-        generation = [];
+        activeGeneration = [];
         for (i = 0; i < size; i++) {
             gene = mutateGene(geneBase, .2);
-            generation.push(new Particle(10, gene));
+            activeGeneration.push(new Particle(10, gene));
         }
     }
-    activeGeneration = generation.slice(0)
+    generation = []
 }
 
 function getRandomArbitrary(min, max) {
@@ -143,16 +143,17 @@ function breed(generation) {
 }
 
 function kill(particle) {
-    var index = array.indexOf(particle);
-    var i = generation.indexOf(activeGeneration.splice(index, 1));
-
-    generation[i].score = scoreParticle(particle);
+    var index = activeGeneration.indexOf(particle);
+    var part = activeGeneration.splice(index, 1);
+    part.score =scoreParticle(particle);
+    generation.push(part);
 }
 
-function target() {
+function Target() {
     this.x = 1000;
     this.y = 1000;
 }
+var target = new Target();
 function scoreParticle(particle) {
     return Math.abs(particle.x - target.x) + Math.abs(particle.y - target.y)
 }
@@ -183,6 +184,8 @@ function updateParticlePosition(particle, timeInterval) {
         if (vector.time < q) {
             q -= vector.time;
             index++;
+        } else {
+            break;
         }
         if (index >= particle.gene.length) {
             kill(particle);
