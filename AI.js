@@ -166,12 +166,12 @@ function scoreParticle(particle, timeIndex) {
 }
 
 var timeInterval = 0;
-function updateParticles(lines, startX, startY, targetX, targetY) {
+function updateParticles(lines, newStartX, newStartY, newTargetX, newTargetY) {
     //DO NOT COMMIT
-    startX = 0;
-    startY = 0;
-    targetX = 1000;
-    targetY = 800;
+    startX = newStartX;
+    startY = newStartY;
+    targetX = newTargetX;
+    targetY = newTargetY;
 
 
     target = new Target(targetX, targetY);
