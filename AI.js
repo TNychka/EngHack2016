@@ -33,7 +33,7 @@ function spawnGeneration(size) {
         var geneBase = breed(generation);
         activeGeneration = [];
         for (i = 0; i < size; i++) {
-            gene = mutateGene(geneBase, .2);
+            gene = mutateGene(geneBase, 0.2);
             activeGeneration.push(new Particle(10, gene));
         }
     }
@@ -79,13 +79,14 @@ function mutateGene(geneBase, mutationRate) {
             } else if (rand < .98) { //insert new random direction
                 newGene.push(getRandomVector())
             } else { //remove random direction
-                if (newGene.time > 0) {
+                if (newGene.length > 0) {
                     newGene.pop()
                 }
             }
         }
         newGene.push(new Vector(time, x, y))
     }
+    return newGene
 }
 
 //can enable extra breeding particle if desired. Just uncomment the not comments
@@ -159,7 +160,6 @@ function scoreParticle(particle) {
 }
 
 function updateParticles() {
-    while (1) {
         if (activeGeneration.length === 0) {
             spawnGeneration(10);
         }
@@ -245,4 +245,14 @@ function line_intersects(p0_x, p0_y, p1_x, p1_y, p2_x, p2_y, p3_x, p3_y) {
     return (s >= 0 && s <= 1 && t >= 0 && t <= 1)
 }
 
-updateParticles();
+
+function Line(x1, y1, x2, y2) {
+    this.x1 = x1;
+    this.y1 = y1;
+    this.x2 = x2;
+    this.y2 = y2;
+}
+
+while (1) {
+    updateParticles([new Line(100, 100, 200, 200)]);
+}
