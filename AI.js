@@ -5,9 +5,9 @@
 function Particle(size, gene) {
     this.size = size;
     this.gene = gene;
-    this.score = 1000000000000;
-    this.x = 0;
-    this.y = 0;
+    this.score = 0;
+    this.x = 10;
+    this.y = 10;
 }
 
 function Vector(time, x, y) {
@@ -33,7 +33,7 @@ function spawnGeneration(size) {
         var geneBase = breed(generation);
         activeGeneration = [];
         for (i = 0; i < size; i++) {
-            gene = mutateGene(geneBase, 0.2);
+            gene = mutateGene(geneBase, 0.5);
             activeGeneration.push(new Particle(10, gene));
         }
     }
@@ -76,7 +76,7 @@ function mutateGene(geneBase, mutationRate) {
                 x = getRandomArbitrary(x - variance, x + variance)
             } else if (rand < .97) { //change y direction
                 y = getRandomArbitrary(y - variance, y + variance)
-            } else if (rand < .98) { //insert new random direction
+            } else if (rand < 1) { //insert new random direction
                 newGene.push(getRandomVector())
             } else { //remove random direction
                 if (newGene.length > 0) {
@@ -85,6 +85,12 @@ function mutateGene(geneBase, mutationRate) {
             }
         }
         newGene.push(new Vector(time, x, y))
+    }
+    if(newGene.length === 0) {
+        var numberOfVectors = getRandomArbitrary(1, 10);
+        for (var z = 0; z < numberOfVectors; z++) {
+            newGene.push(getRandomVector());
+        }
     }
     return newGene
 }
@@ -152,30 +158,36 @@ function kill(particle, timeIndex) {
 
 function Target() {
     this.x = 1000;
-    this.y = 1000;
+    this.y = 500;
 }
 var target = new Target();
 function scoreParticle(particle, timeIndex) {
-    return (target.x - Math.abs(particle.x - target.x)) + (target.y - Math.abs(particle.y - target.y)) + 10000 - timeIndex
+    return (10000 - Math.abs(particle.x - target.x)) + (10000 - Math.abs(particle.y - target.y)) + (10000 - timeIndex)
 }
 
 var timeInterval = 0;
 function updateParticles(lines) {
-    if (activeGeneration.length === 0) {
-        spawnGeneration(100)
+    if (activeGeneration.length === 0 || timeInterval > 300) {
+        for (particle in activeGeneration) {
+            kill(activeGeneration[particle])
+        }
+        spawnGeneration(100);
         timeInterval = 0;
     }
     timeInterval++;
-    for (var z = activeGeneration.length - 1; z >= 0 ; z --) {
-        var particle = activeGeneration[z];
+    for (particle in activeGeneration) {
+        var particle = activeGeneration[particle];
         updateParticlePosition(particle, timeInterval, lines, timeInterval);
     }
     return activeGeneration
 }
 
-screenBoundsX = 1000;
-screenBoundsY = 1000;
+var screenBoundsX = window.innerWidth;
+var screenBoundsY = window.innerHeight;
 function updateParticlePosition(particle, timeInterval, lines, timeIndex) {
+    if (!particle) {
+        return
+    }
     var q = timeInterval;
     var index = 0;
     var vector = particle.gene[index];
@@ -188,7 +200,9 @@ function updateParticlePosition(particle, timeInterval, lines, timeIndex) {
         }
         if (index >= particle.gene.length) {
             kill(particle, timeIndex);
-            q = 0;
+            break;
+        } else {
+            vector = particle.gene[index]
         }
     }
     var newX = particle.x + vector.x;
@@ -248,5 +262,4 @@ var generationIndex = 0;
 // while (1) {
 //     generationIndex++;
 //     var test = updateParticles([new Line(100, 100, 200, 200)]);
-//     test;
 // }

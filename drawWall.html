@@ -54,14 +54,16 @@ void draw(){
 
 
 
-/*var particles = updateParticles(lines);
+var particles = updateParticles(lines);
 
-  for(int i = 0; i <particles.length(); i++){
+  for(int i = 0; i < particles.length(); i++){
 
-  stroke(127,255,80);
-  strokeWeight(3);
-  ellipse(particles[i].x ,particles[i].y,5,5);
-  }*/
+    stroke(127,255,80);
+    strokeWeight(3);
+    if(typeof particles[i] !== 'undefined' && typeof particles[i].x !== 'undefined' && typeof particles[i].y !== 'undefined') {
+        ellipse(particles[i].x ,particles[i].y,5,5);
+    }
+  }
                
 }
 
