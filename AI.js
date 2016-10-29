@@ -24,7 +24,7 @@ function spawnGeneration(size) {
         for (var i = 0; i < size; i++) {
             var numberOfVectors = getRandomArbitrary(1, 10);
             var gene = [];
-            for (var z = 0; z < numberOfVectors; z ++) {
+            for (var z = 0; z < numberOfVectors; z++) {
                 gene.push(getRandomVector());
             }
             generation.push(new Particle(10, gene));
@@ -32,7 +32,7 @@ function spawnGeneration(size) {
     } else {
         var geneBase = breed(generation);
         generation = [];
-        for (i = 0; i < size; i ++) {
+        for (i = 0; i < size; i++) {
             gene = mutateGene(geneBase, .2);
             generation.push(new Particle(10, gene));
         }
@@ -95,7 +95,7 @@ function breed(generation) {
     //var delta = null; //unused for now
 
     //select most fertile particles
-    for (i = 0; i < generation.length; i ++) {
+    for (i = 0; i < generation.length; i++) {
         var particle = generation[i];
         if (alpha == null) {
             alpha = particle
@@ -109,7 +109,8 @@ function breed(generation) {
             alpha = particle
         } else if (particle.score > beta.score) {
             beta = particle
-        }/** else if (particle.score > delta.score) {
+        }
+        /** else if (particle.score > delta.score) {
             delta = particle
         }*/
     }
@@ -120,17 +121,17 @@ function breed(generation) {
         var crossover = getRandomArbitrary(1, 2); //getRandomArbitrary(1, 3);
         switch (crossover) { //select random vector from breeding pool until
             case 1:
-                if(alpha.gene.length > i) {
+                if (alpha.gene.length > i) {
                     newGene.push(alpha.gene[i]);
                 }
                 break;
             case 2:
-                if(beta.gene.length > i) {
+                if (beta.gene.length > i) {
                     newGene.push(beta.gene[i]);
                 }
                 break;
             /**case 3:
-                if(delta.gene.length > i) {
+             if(delta.gene.length > i) {
                     newGene.push(delta.gene(i));
                     break;
                 }*/
@@ -157,13 +158,13 @@ function scoreParticle(particle) {
 }
 
 function updateParticles() {
-    while (1){
+    while (1) {
         if (activeGeneration.length === 0) {
             spawnGeneration(10);
         }
         var timeInterval = 0;
         while (activeGeneration.length !== 0) {
-            timeInterval ++;
+            timeInterval++;
             for (var i = 0; i < activeGeneration.length; i++) {
                 var particle = activeGeneration[i];
                 updateParticlePosition(particle, timeInterval);
@@ -177,22 +178,67 @@ screenBoundsY = 1000;
 function updateParticlePosition(particle, timeInterval) {
     var q = timeInterval;
     var index = 0;
-    while (q > 0 && index < particle.gene.length) {
-        var vector = particle.gene[index];
+    var vector = particle.gene[index];
+    while (q > 0) {
         if (vector.time < q) {
             q -= vector.time;
-            index ++;
+            index++;
+        }
+        if (index >= particle.gene.length) {
+            kill(particle);
+            q = 0;
         }
     }
-    if (collision(particle)) {
-        kill(particle)
+    var newX = particle.x + vector.x;
+    var newY = particle.y + vector.y;
+    if (activeGeneration.indexOf(particle) === -1) {
+        //doesn't exist don't do anything
+    } else if (collision(particle, vector)) {
+        kill(particle);
     } else {
-
+        particle.x = newX;
+        particle.y = newY;
+        activeGeneration[index] = particle;
     }
 }
 
-function collision() {
+function Line() {
+    var x1 = 100;
+    var y1 = 100;
+    var x2 = 200;
+    var y2 = 200;
+}
+lines = [new Line()];
+function collision(particle, vector) {
+    for (i = 0; i < lines.length; i++) {
+        if (line_intersects(
+                particle.x,
+                particle.y,
+                particle.x + vector.x,
+                particle.y + vector.y,
+                lines[i].x1,
+                lines[i].y1,
+                lines[i].x2,
+                lines[i].y2)){
+            return true;
+        }
+    }
+    return false;
+}
 
+function line_intersects(p0_x, p0_y, p1_x, p1_y, p2_x, p2_y, p3_x, p3_y) {
+
+    var s1_x, s1_y, s2_x, s2_y;
+    s1_x = p1_x - p0_x;
+    s1_y = p1_y - p0_y;
+    s2_x = p3_x - p2_x;
+    s2_y = p3_y - p2_y;
+
+    var s, t;
+    s = (-s1_y * (p0_x - p2_x) + s1_x * (p0_y - p2_y)) / (-s2_x * s1_y + s1_x * s2_y);
+    t = ( s2_x * (p0_y - p2_y) - s2_y * (p0_x - p2_x)) / (-s2_x * s1_y + s1_x * s2_y);
+
+    return (s >= 0 && s <= 1 && t >= 0 && t <= 1)
 }
 
 updateParticles();
