@@ -88,7 +88,7 @@ noStroke();
   	line(endX, endY, startX, startY); 
   }
 
-
+if(startClicked == true){
 
 var particles = updateParticles(lines);
 
@@ -100,6 +100,8 @@ var particles = updateParticles(lines);
         ellipse(particles[i].x ,particles[i].y,5,5);
     }
   }
+}
+
                
 }
 
@@ -118,7 +120,7 @@ void mouseClicked(){
       StartClicked = true;
     }
     else if((mouseX >= rectxLocation && mouseX <= (rectxLocation + 100))&&(mouseY >= 350 && mouseY <= 400)){
-      StartClicked = false;
+      //StartClicked = false;
     }
   console.log("Nice"+ DrawClicked +" "+StartClicked);
   console.log("clicked");
