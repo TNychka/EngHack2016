@@ -23,6 +23,8 @@ int nX, nY;
 int startX, startY;
 int endX, endY;
 int delay = 1;
+int pStartX, pStartY;
+int pEndX , pEndY;
 boolean start = true; //Detects whether or not to start to draw
 boolean drawMe= false; //Detects whether or not to continue to draw
 wall = new Line();
@@ -35,6 +37,10 @@ void setup(){
   noStroke();
   int mainWidth = window.innerWidth/6;
   rect(mainWidth*5, 0, mainWidth, window.innerHeight);
+  pStartX = 10;
+  pStartY = window.innerHeight/2;
+  pEndX = window.innerWidth * 5.0/6 - 10;
+  pEndY = window.innerHeight/2;
  
 }
 
@@ -43,6 +49,7 @@ void draw(){
 noStroke();
  fill(#b14622);
  rect(window.innerWidth * 5/6, 0, window.innerWidth/6, window.innerHeight);
+
 
 
   if(DrawClicked == true){
@@ -88,9 +95,14 @@ noStroke();
   	line(endX, endY, startX, startY); 
   }
 
+ noStroke();  
+ fill(#602748);
+ rectMode(CENTER);
+ rect(pStartX, pStartY , 20, 20);
+ rect(pEndX, pEndY, 20 , 20);
+ rectMode(CORNER);
 
-
-var particles = updateParticles(lines);
+var particles = updateParticles(lines , pStartX, pStartY, pEndX , pEndY );
 
   for(int i = 0; i < particles.length(); i++){
 
@@ -103,6 +115,22 @@ var particles = updateParticles(lines);
                
 }
 
+void mouseDragged()
+{
+
+if((mouseX >= (pStartX - 10) && mouseX <= (pStartX + 10)) && (mouseY >= pStartY - 10 && mouseY <= pStartY + 10) && DrawClicked == false )
+{
+  pStartX = mouseX;
+  pStartY = mouseY;
+}
+
+if((mouseX >= (pEndX - 10) && mouseX <= (pEndX + 10)) && (mouseY >= pEndY - 10 && mouseY <= pEndY + 10) && DrawClicked == false )
+{
+  pEndX = mouseX;
+  pEndY = mouseY;
+}
+
+}
 
 // Set circle's next destination
 void mouseClicked(){
