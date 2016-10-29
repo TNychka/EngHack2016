@@ -1,6 +1,12 @@
 <script src="processing.js"></script>
 <script type="text/processing" data-processing-target="mycanvas">
 // Global variables
+function Line(x1, y1, x2, y2) {
+    this.x1 = x1;
+    this.y1 = y1;
+    this.x2 = x2;
+    this.y2 = y2;
+}
 float radius = 50.0;
 int X, Y;
 int nX, nY;
@@ -9,7 +15,8 @@ int endX, endY;
 int delay = 1;
 boolean start = true; //Detects whether or not to start to draw
 boolean drawMe= false; //Detects whether or not to continue to draw
-
+wall = new Line();
+lines = [];
 // Setup the Processing Canvas
 void setup(){
   size( window.innerWidth, window.innerHeight );
@@ -25,28 +32,45 @@ void draw(){
   Y+=(nY-Y)/delay;
   
   // Fill canvas grey
+
   background( 0 );
   
   // Set fill-color to blue
-  fill( 100, 121, 184 );
-  
+  //fill( 100, 121, 184 );
+
   // Set stroke-color white
+  strokeWeight(5);
   stroke(255,127,80);
   // Draw circle
+    for(int i = 0; i < lines.length(); i++){
+      line(lines[i].x1, lines[i].y1, lines[i].x2, lines[i].y2);
+    }
   if(drawMe == true){
   	line( X, Y, startX, startY); 
   } else {
-  	line(endX, endY, startX, startY);
+  	line(endX, endY, startX, startY); 
   }
-               
-}
+
+
+
+var particles = AI.updateParticles(lines);
+
+  for(int i = 0; i < particles.length(); i++){
+    
+      stroke(127,255,80);
+      strokeWeight(3);
+      ellipse(particles[i].x ,particles[i].y,5,5);
+  }
+    
+  }
 
 
 // Set circle's next destination
 void mouseClicked(){
+  console.log("clicked");
 	if(mouseX < window.innerWidth - 400){ //Within a certain range
   		drawMe = true;
-  		strokeWeight( 5 );
+  		//strokeWeight( 5 );
   		frameRate( 15 );
  		 X = width / 2;
  		 Y = height / 2;
@@ -62,6 +86,8 @@ void mouseClicked(){
  		 	drawMe = false;
  		 	endX = mouseX;
  		 	endY = mouseY;
+      wall = new Line(endX, endY, startX, startY);
+      lines.push(wall);
  		 }
   	}  
 }
