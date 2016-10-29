@@ -95,12 +95,17 @@ noStroke();
   	line(endX, endY, startX, startY); 
   }
 
+
  noStroke();  
  fill(#602748);
  rectMode(CENTER);
  rect(pStartX, pStartY , 20, 20);
  rect(pEndX, pEndY, 20 , 20);
  rectMode(CORNER);
+
+
+
+if(startClicked == true){
 
 var particles = updateParticles(lines , pStartX, pStartY, pEndX , pEndY );
 
@@ -112,6 +117,8 @@ var particles = updateParticles(lines , pStartX, pStartY, pEndX , pEndY );
         ellipse(particles[i].x ,particles[i].y,5,5);
     }
   }
+}
+
                
 }
 
@@ -146,7 +153,7 @@ void mouseClicked(){
       StartClicked = true;
     }
     else if((mouseX >= rectxLocation && mouseX <= (rectxLocation + 100))&&(mouseY >= 350 && mouseY <= 400)){
-      StartClicked = false;
+      //StartClicked = false;
     }
   console.log("Nice"+ DrawClicked +" "+StartClicked);
   console.log("clicked");
