@@ -167,17 +167,28 @@ function scoreParticle(particle, timeIndex) {
 
 var timeInterval = 0;
 function updateParticles(lines, startX, startY, targetX, targetY) {
-    target = newTarget(targetX, targetY);
-    if (activeGeneration.length === 0 || timeInterval > 300) {
+    //DO NOT COMMIT
+    startX = 0;
+    startY = 0;
+    targetX = 500;
+    targetY = 500;
+
+
+    target = new Target(targetX, targetY);
+    if (activeGeneration.length === 0 || timeInterval > 150) {
         for (particle in activeGeneration) {
             kill(activeGeneration[particle])
         }
-        spawnGeneration(100, startX, startY);
+        spawnGeneration(200, startX, startY);
         timeInterval = 0;
     }
     timeInterval++;
     for (particle in activeGeneration) {
         var particle = activeGeneration[particle];
+        var score = scoreParticle(particle);
+        if (score > particle.score) {
+            particle.score = score
+        }
         updateParticlePosition(particle, timeInterval, lines, timeInterval);
     }
     return activeGeneration
