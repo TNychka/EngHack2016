@@ -119,7 +119,12 @@ var particles = updateParticles(lines , pStartX, pStartY, pEndX , pEndY );
   }
 }
 
-               
+         /* @pjs preload="smyf_logo2.jpg"; */
+  PImage b;
+
+    b = loadImage("smyf_logo2.jpg");
+
+    image(b, rectxLocation - 40, 10);      
 }
 
 void mouseDragged()
