@@ -193,7 +193,7 @@ function updateParticlePosition(particle, timeInterval) {
     var newY = particle.y + vector.y;
     if (activeGeneration.indexOf(particle) === -1) {
         //doesn't exist don't do anything
-    } else if (collision(particle, vector)) {
+    } else if (collision(particle, vector) || newX < screenBoundsX || newX > screenBoundsX || newY < screenBoundsY || newY > screenBoundsY) {
         kill(particle);
     } else {
         particle.x = newX;
@@ -203,12 +203,13 @@ function updateParticlePosition(particle, timeInterval) {
 }
 
 function Line() {
-    var x1 = 100;
-    var y1 = 100;
-    var x2 = 200;
-    var y2 = 200;
+    this.x1 = 100;
+    this.y1 = 100;
+    this.x2 = 200;
+    this.y2 = 200;
 }
-lines = [new Line()];
+line = new Line();
+lines = [line];
 function collision(particle, vector) {
     for (i = 0; i < lines.length; i++) {
         if (line_intersects(
