@@ -2,12 +2,11 @@
  * Created by Tyler on 2016-10-28.
  */
 
-function Particle(size, gene) {
-    this.size = size;
+function Particle(gene, startX, startY) {
     this.gene = gene;
     this.score = 0;
-    this.x = 10;
-    this.y = 10;
+    this.x = startX;
+    this.y = startY;
 }
 
 function Vector(time, x, y) {
@@ -19,7 +18,7 @@ function Vector(time, x, y) {
 var generation = [];
 var activeGeneration = [];
 //if generatation is empty a random generation will be spawned
-function spawnGeneration(size) {
+function spawnGeneration(size, startX, startY) {
     if (generation.length === 0) {
         for (var i = 0; i < size; i++) {
             var numberOfVectors = getRandomArbitrary(1, 10);
@@ -27,14 +26,14 @@ function spawnGeneration(size) {
             for (var z = 0; z < numberOfVectors; z++) {
                 gene.push(getRandomVector());
             }
-            activeGeneration.push(new Particle(10, gene));
+            activeGeneration.push(new Particle(gene ,startX, startY));
         }
     } else {
         var geneBase = breed(generation);
         activeGeneration = [];
         for (i = 0; i < size; i++) {
             gene = mutateGene(geneBase, 0.5);
-            activeGeneration.push(new Particle(10, gene));
+            activeGeneration.push(new Particle(gene ,startX, startY));
         }
     }
     generation = []
@@ -156,22 +155,24 @@ function kill(particle, timeIndex) {
     generation.push(particle);
 }
 
-function Target() {
-    this.x = 1000;
-    this.y = 500;
+function Target(targetX, targetY) {
+    this.x = targetX;
+    this.y = targetY;
 }
-var target = new Target();
+
+var target = new Target(500, 500);
 function scoreParticle(particle, timeIndex) {
     return (10000 - Math.abs(particle.x - target.x)) + (10000 - Math.abs(particle.y - target.y)) + (10000 - timeIndex)
 }
 
 var timeInterval = 0;
-function updateParticles(lines) {
+function updateParticles(lines, startX, startY, targetX, targetY) {
+    target = newTarget(targetX, targetY);
     if (activeGeneration.length === 0 || timeInterval > 300) {
         for (particle in activeGeneration) {
             kill(activeGeneration[particle])
         }
-        spawnGeneration(100);
+        spawnGeneration(100, startX, startY);
         timeInterval = 0;
     }
     timeInterval++;
