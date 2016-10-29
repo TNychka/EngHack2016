@@ -159,22 +159,18 @@ function scoreParticle(particle, timeIndex) {
     return (target.x - Math.abs(particle.x - target.x)) + (target.y - Math.abs(particle.y - target.y)) + 10000 - timeIndex
 }
 
+var timeInterval = 0;
 function updateParticles(lines) {
     if (activeGeneration.length === 0) {
-        spawnGeneration(10);
+        spawnGeneration(100)
+        timeInterval = 0;
     }
-    var timeInterval = 0;
-    while (activeGeneration.length !== 0) {
-        timeInterval++;
-        for (var i = 0; i < activeGeneration.length; i++) {
-            var particle = activeGeneration[i];
-            updateParticlePosition(particle, timeInterval, lines, timeInterval);
-        }
+    timeInterval++;
+    for (var z = activeGeneration.length - 1; z >= 0 ; z --) {
+        var particle = activeGeneration[z];
+        updateParticlePosition(particle, timeInterval, lines, timeInterval);
     }
-    var newParticle = new Particle(10, []);
-    newParticle.x ++;
-    newParticle.y ++;
-    return newParticle
+    return activeGeneration
 }
 
 screenBoundsX = 1000;
@@ -199,7 +195,7 @@ function updateParticlePosition(particle, timeInterval, lines, timeIndex) {
     var newY = particle.y + vector.y;
     if (activeGeneration.indexOf(particle) === -1) {
         //doesn't exist don't do anything
-    } else if (collision(particle, vector, lines) || newX < screenBoundsX || newX > screenBoundsX || newY < screenBoundsY || newY > screenBoundsY) {
+    } else if (collision(particle, vector, lines) || newX < 0 || newX > screenBoundsX || newY < 0 || newY > screenBoundsY) {
         kill(particle, timeIndex);
     } else {
         particle.x = newX;
@@ -248,12 +244,9 @@ function Line(x1, y1, x2, y2) {
     this.y2 = y2;
 }
 
-var generationIndex = 0
-while (1) {
-    generationIndex++;
-    var newParticle = new Particle(10, []);
-    newParticle.x ++;
-    newParticle.y ++;
-    var test = [newParticle]//updateParticles([new Line(100, 100, 200, 200)]);
-    test
-}
+var generationIndex = 0;
+// while (1) {
+//     generationIndex++;
+//     var test = updateParticles([new Line(100, 100, 200, 200)]);
+//     test;
+// }
