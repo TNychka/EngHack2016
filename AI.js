@@ -262,4 +262,5 @@ var generationIndex = 0;
 // while (1) {
 //     generationIndex++;
 //     var test = updateParticles([new Line(100, 100, 200, 200)]);
+//     test;
 // }

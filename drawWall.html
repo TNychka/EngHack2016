@@ -1,7 +1,16 @@
+<style type="text/css">
+body {
+    margin: 0;
+    text-align: center;
+}
+</style>
 <script src="processing.js"></script>
 <script src="AI.js"></script>
 <script type="text/processing" data-processing-target="mycanvas">
 // Global variables
+int rectxLocation = 5*window.innerWidth/6 + (window.innerWidth/6 - 100)/2;
+boolean DrawClicked = false;
+boolean StartClicked = false;
 function Line(x1, y1, x2, y2) {
     this.x1 = x1;
     this.y1 = y1;
@@ -20,12 +29,34 @@ wall = new Line();
 lines = [];
 // Setup the Processing Canvas
 void setup(){
-  size( window.innerWidth, window.innerHeight );
+  size(window.innerWidth,window.innerHeight);
+  background(#130912);
+  fill(#B14622);
+  noStroke();
+  int mainWidth = window.innerWidth/6;
+  rect(mainWidth*5, 0, mainWidth, window.innerHeight);
+ 
 }
 
 // Main draw loop
 void draw(){
+  if(DrawClicked == true){
+    fill(#4F3046);
+  }else{
+    fill(#3E1C34);
+  }
+  noStroke();
+  rect(rectxLocation, 250, 100, 50);
+  fill(#3E1C34);
+  rect(rectxLocation, 350, 100, 50);
+  rect(rectxLocation, 450, 100, 50);
   
+  fill(#DCE1DE);
+  textSize(18);
+  text("Draw", rectxLocation + 25, 280);
+  text("Start", rectxLocation + 27, 380);
+  text("Clear", rectxLocation + 27, 480);
+
  // radius = radius + sin( frameCount / 4 );
   
   // Track circle to new destination
@@ -33,15 +64,15 @@ void draw(){
   Y+=(nY-Y)/delay;
   
   // Fill canvas grey
-
-  background( 0 );
+  fill(#130912);
+  rect(0, 0, (window.innerWidth/6)*5, window.innerHeight);
   
   // Set fill-color to blue
   //fill( 100, 121, 184 );
 
   // Set stroke-color white
   strokeWeight(5);
-  stroke(255,127,80);
+  stroke(#F7921E);
   // Draw circle
     for(int i = 0; i < lines.length(); i++){
       line(lines[i].x1, lines[i].y1, lines[i].x2, lines[i].y2);
@@ -70,8 +101,23 @@ var particles = updateParticles(lines);
 
 // Set circle's next destination
 void mouseClicked(){
+  <!--Draw Button-->
+  if((mouseX >= (rectxLocation) && mouseX <= rectxLocation + 100) && (mouseY >= 250 && mouseY <= 300) && DrawClicked == false){
+    DrawClicked = true;
+  }
+  else if((mouseX >= rectxLocation && mouseX <= (rectxLocation + 100))&&(mouseY >= 250 && mouseY <= 300) && drawMe == false){
+    DrawClicked = false;
+  }
+<!--Start Button-->
+  if((mouseX >= (rectxLocation) && mouseX <= rectxLocation + 100) && (mouseY >= 350 && mouseY <= 400) && StartClicked == false){
+      StartClicked = true;
+    }
+    else if((mouseX >= rectxLocation && mouseX <= (rectxLocation + 100))&&(mouseY >= 350 && mouseY <= 400)){
+      StartClicked = false;
+    }
+  console.log("Nice"+ DrawClicked +" "+StartClicked);
   console.log("clicked");
-	if(mouseX < window.innerWidth - 400){ //Within a certain range
+	if(mouseX < (window.innerWidth/6)*5 && DrawClicked == true){ //Within a certain range
   		drawMe = true;
   		//strokeWeight( 5 );
   		frameRate( 15 );
@@ -93,9 +139,21 @@ void mouseClicked(){
       lines.push(wall);
  		 }
   	}  
+    <!--Clear Button-->
+  if((mouseX >= (rectxLocation) && mouseX <= rectxLocation + 100) && (mouseY >= 450 && mouseY <= 500) && DrawClicked == false){
+      lines = [];
+      endX = 0;
+      endY = 0;
+      startX = 0;
+      startY = 0;
+      console.log("Clear!");
+      noStroke();
+      fill(#130912);
+      rect(0, 0, (window.innerWidth/6)*5, window.innerHeight);
+    }
 }
 void mouseMoved(){
-	if(mouseX < window.innerWidth - 400 && drawMe == true){ //Within a certain range
+	if(mouseX < (window.innerWidth/6)*5 && drawMe == true){ //Within a certain range
   		nX = mouseX;
   		nY = mouseY;
   	}  
