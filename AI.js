@@ -32,7 +32,7 @@ function spawnGeneration(size, startX, startY) {
         var geneBase = breed(generation);
         activeGeneration = [];
         for (i = 0; i < size; i++) {
-            gene = mutateGene(geneBase, 0.5);
+            gene = mutateGene(geneBase, 0.3);
             activeGeneration.push(new Particle(gene ,startX, startY));
         }
     }
@@ -69,13 +69,13 @@ function mutateGene(geneBase, mutationRate) {
         if (Math.random() < mutationRate) {
             var rand = Math.random();
             var variance = 3;
-            if (rand < .33) { // change duration
+            if (rand < .3) { // change duration
                 time = bound(0, 10, getRandomArbitrary(time - variance, time + variance))
-            } else if (rand < .66) { //change x direction
+            } else if (rand < .55) { //change x direction
                 x = getRandomArbitrary(x - variance, x + variance)
-            } else if (rand < .97) { //change y direction
+            } else if (rand < .8) { //change y direction
                 y = getRandomArbitrary(y - variance, y + variance)
-            } else if (rand < 1) { //insert new random direction
+            } else if (rand < .9) { //insert new random direction
                 newGene.push(getRandomVector())
             } else { //remove random direction
                 if (newGene.length > 0) {
@@ -179,7 +179,7 @@ function updateParticles(lines, startX, startY, targetX, targetY) {
         for (particle in activeGeneration) {
             kill(activeGeneration[particle])
         }
-        spawnGeneration(200, startX, startY);
+        spawnGeneration(100, startX, startY);
         timeInterval = 0;
     }
     timeInterval++;
@@ -222,7 +222,12 @@ function updateParticlePosition(particle, timeInterval, lines, timeIndex) {
     } else {
         particle.x = newX;
         particle.y = newY;
-        activeGeneration[index] = particle;
+        if ((target.x - 20 < particle.x) && (target.x + 20 > particle.x) && (target.y - 20 < particle.y) && (target.y + 20 > particle.y)) {
+            kill(particle, timeIndex);
+            generation[generation.indexOf(particle)].score = 100000 - timeIndex;
+        } else {
+            activeGeneration[index] = particle;
+        }
     }
 }
 
