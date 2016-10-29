@@ -242,4 +242,4 @@ function line_intersects(p0_x, p0_y, p1_x, p1_y, p2_x, p2_y, p3_x, p3_y) {
     return (s >= 0 && s <= 1 && t >= 0 && t <= 1)
 }
 
-updateParticles();
+//updateParticles();
