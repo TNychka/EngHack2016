@@ -116,6 +116,12 @@ noStroke();
     }
 }
 
+         /* @pjs preload="smyf_logo2.jpg"; */
+  PImage b;
+
+    b = loadImage("smyf_logo2.jpg");
+
+    image(b, rectxLocation - 40, 10);      
 void mouseDragged(){
     if(DrawClicked == false &&(mouseX >= (pStartX - 10) && mouseX <= (pStartX + 10)) && (mouseY >= pStartY - 10 && mouseY <= pStartY + 10) ){
       pStartX = mouseX;
