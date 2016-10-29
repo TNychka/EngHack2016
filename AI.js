@@ -143,10 +143,10 @@ function breed(generation) {
     return newGene;
 }
 
-function kill(particle) {
+function kill(particle, timeIndex) {
     var index = activeGeneration.indexOf(particle);
     activeGeneration.splice(index, 1);
-    particle.score = scoreParticle(particle);
+    particle.score = scoreParticle(particle, timeIndex);
     generation.push(particle);
 }
 
@@ -155,8 +155,8 @@ function Target() {
     this.y = 1000;
 }
 var target = new Target();
-function scoreParticle(particle) {
-    return (target.x - Math.abs(particle.x - target.x)) + (target.y - Math.abs(particle.y - target.y))
+function scoreParticle(particle, timeIndex) {
+    return (target.x - Math.abs(particle.x - target.x)) + (target.y - Math.abs(particle.y - target.y)) + 10000 - timeIndex
 }
 
 function updateParticles(lines) {
@@ -168,16 +168,18 @@ function updateParticles(lines) {
         timeInterval++;
         for (var i = 0; i < activeGeneration.length; i++) {
             var particle = activeGeneration[i];
-            updateParticlePosition(particle, timeInterval, lines);
+            updateParticlePosition(particle, timeInterval, lines, timeInterval);
         }
     }
-
-    return activeGeneration
+    var newParticle = new Particle(10, []);
+    newParticle.x ++;
+    newParticle.y ++;
+    return newParticle
 }
 
 screenBoundsX = 1000;
 screenBoundsY = 1000;
-function updateParticlePosition(particle, timeInterval, lines) {
+function updateParticlePosition(particle, timeInterval, lines, timeIndex) {
     var q = timeInterval;
     var index = 0;
     var vector = particle.gene[index];
@@ -189,7 +191,7 @@ function updateParticlePosition(particle, timeInterval, lines) {
             break;
         }
         if (index >= particle.gene.length) {
-            kill(particle);
+            kill(particle, timeIndex);
             q = 0;
         }
     }
@@ -198,7 +200,7 @@ function updateParticlePosition(particle, timeInterval, lines) {
     if (activeGeneration.indexOf(particle) === -1) {
         //doesn't exist don't do anything
     } else if (collision(particle, vector, lines) || newX < screenBoundsX || newX > screenBoundsX || newY < screenBoundsY || newY > screenBoundsY) {
-        kill(particle);
+        kill(particle, timeIndex);
     } else {
         particle.x = newX;
         particle.y = newY;
@@ -248,6 +250,10 @@ function Line(x1, y1, x2, y2) {
 
 var generationIndex = 0
 while (1) {
-    generationIndex++
-    updateParticles([new Line(100, 100, 200, 200)]);
+    generationIndex++;
+    var newParticle = new Particle(10, []);
+    newParticle.x ++;
+    newParticle.y ++;
+    var test = [newParticle]//updateParticles([new Line(100, 100, 200, 200)]);
+    test
 }
