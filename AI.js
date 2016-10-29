@@ -68,7 +68,7 @@ function mutateGene(geneBase, mutationRate) {
         var y = oldVector.y;
         if (Math.random() < mutationRate) {
             var rand = Math.random();
-            var variance = 2;
+            var variance = 3;
             if (rand < .33) { // change duration
                 time = bound(0, 10, getRandomArbitrary(time - variance, time + variance))
             } else if (rand < .66) { //change x direction
@@ -185,16 +185,12 @@ function updateParticles(lines, startX, startY, targetX, targetY) {
     timeInterval++;
     for (particle in activeGeneration) {
         var particle = activeGeneration[particle];
-        var score = scoreParticle(particle);
-        if (score > particle.score) {
-            particle.score = score
-        }
         updateParticlePosition(particle, timeInterval, lines, timeInterval);
     }
     return activeGeneration
 }
 
-var screenBoundsX = window.innerWidth;
+var screenBoundsX = 5 * window.innerWidth / 6;
 var screenBoundsY = window.innerHeight;
 function updateParticlePosition(particle, timeInterval, lines, timeIndex) {
     if (!particle) {
