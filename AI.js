@@ -5,122 +5,194 @@
 function Particle(size, gene) {
     this.size = size;
     this.gene = gene;
-    this.score = 0
+    this.score = 1000000000000;
+    this.x = 0;
+    this.y = 0;
 }
 
-function Vector(length, x, y) {
-    this.length = length;
+function Vector(time, x, y) {
+    this.time = time;
     this.x = x;
     this.y = y;
 }
 
 var generation = [];
-var geneome = [];
+var activeGeneration = [];
 //if generatation is empty a random generation will be spawned
 function spawnGeneration(size) {
-    if (generation.isEmpty()) {
-        for (i in size) {
-            numberOfVectors = getRandomArbitrary(1, 10);
-            gene = [];
-            for (z in numberOfVectors) {
-                gene.add(getRandomVector());
+    if (generation.length === 0) {
+        for (var i = 0; i < size; i++) {
+            var numberOfVectors = getRandomArbitrary(1, 10);
+            var gene = [];
+            for (var z = 0; z < numberOfVectors; z ++) {
+                gene.push(getRandomVector());
             }
-            generation.add(new Particle(10, gene));
+            generation.push(new Particle(10, gene));
         }
     } else {
-        geneBase = breed(generation);
+        var geneBase = breed(generation);
         generation = [];
-        for (i in size) {
-            gene = mutateGene(geneBase);
-            generation.add(new Particle(10, gene));
+        for (i = 0; i < size; i ++) {
+            gene = mutateGene(geneBase, .2);
+            generation.push(new Particle(10, gene));
         }
     }
+    activeGeneration = generation.slice(0)
 }
 
 function getRandomArbitrary(min, max) {
-    return Math.floor(Math.random() * (max - min) + min);
+    return Math.round(Math.random() * (max - min) + min);
 }
 
 function getRandomVector() {
-    time = getRandomArbitrary(1, 10);
-    x = getRandomArbitrary(-10, 10);
-    y = getRandomArbitrary(-10, 10);
+    var time = getRandomArbitrary(1, 10);
+    var x = getRandomArbitrary(-10, 10);
+    var y = getRandomArbitrary(-10, 10);
     return new Vector(time, x, y)
 }
 
 function bound(min, max, value) {
-    return max(min(value, max), min)
+    return Math.max(Math.min(value, max), min)
 }
 
 /**
  * Returns altered gene
  * @param geneBase vectorList to mutate
- * @param mutationRate percent of gene attributes to modify (should be relatively low)
+ * @param mutationRate percent of gene attributes to modify (should be relatively low) (0.01)
  */
 function mutateGene(geneBase, mutationRate) {
-    newGene = [];
-    for (oldVector in geneBase) {
-        length = oldVector.length;
-        x = oldVector.x;
-        y = oldVector.y;
+    var newGene = [];
+    for (var i = 0; i < geneBase.length; i++) {
+        var oldVector = geneBase[i];
+        var time = oldVector.time;
+        var x = oldVector.x;
+        var y = oldVector.y;
         if (Math.random() < mutationRate) {
-            rand = Math.random();
-            variance = 2;
+            var rand = Math.random();
+            var variance = 2;
             if (rand < .33) { // change duration
-                length = bound(0, 10, getRandomArbitrary(length - variance, length + variance))
+                time = bound(0, 10, getRandomArbitrary(time - variance, time + variance))
             } else if (rand < .66) { //change x direction
                 x = getRandomArbitrary(x - variance, x + variance)
             } else if (rand < .97) { //change y direction
                 y = getRandomArbitrary(y - variance, y + variance)
-            } else if (rand < .98) { //add new random direction
-                newGene.add(getRandomVector())
+            } else if (rand < .98) { //insert new random direction
+                newGene.push(getRandomVector())
             } else { //remove random direction
-                if (newGene.length > 0) {
-                    newGene.remove(getRandomArbitrary(0, newGene.length - 1))
+                if (newGene.time > 0) {
+                    newGene.pop()
                 }
             }
         }
-        newGene.add(new Vector(length, x, y))
+        newGene.push(new Vector(time, x, y))
     }
 }
 
+//can enable extra breeding particle if desired. Just uncomment the not comments
 function breed(generation) {
-    alpha = null;
-    beta = null;
-    delta = null;
+    var alpha = null;
+    var beta = null;
+    //var delta = null; //unused for now
 
     //select most fertile particles
-    for (particle in generation) {
+    for (i = 0; i < generation.length; i ++) {
+        var particle = generation[i];
         if (alpha == null) {
             alpha = particle
         } else if (beta == null) {
-            alpha = particle
-        } else if (delta == null) {
-            alpha = particle
-        }
+            beta = particle
+        }/**else if (delta == null) {
+            delta = particle
+        }*/
 
-        if (particle.score > alpha.score) {
+        else if (particle.score > alpha.score) {
             alpha = particle
         } else if (particle.score > beta.score) {
             beta = particle
-        } else if (particle.score > delta.score) {
+        }/** else if (particle.score > delta.score) {
             delta = particle
+        }*/
+    }
+
+    var newGene = [];
+    //breed particles (take random vector attribute of the vectors attributes)
+    for (var i = 0; i < Math.max(alpha.gene.length, beta.gene.length/**, delta.gene.length*/); i++) {
+        var crossover = getRandomArbitrary(1, 2); //getRandomArbitrary(1, 3);
+        switch (crossover) { //select random vector from breeding pool until
+            case 1:
+                if(alpha.gene.length > i) {
+                    newGene.push(alpha.gene[i]);
+                }
+                break;
+            case 2:
+                if(beta.gene.length > i) {
+                    newGene.push(beta.gene[i]);
+                }
+                break;
+            /**case 3:
+                if(delta.gene.length > i) {
+                    newGene.push(delta.gene(i));
+                    break;
+                }*/
+            default://select random vector again
+                i--;
         }
     }
-    newGene = [];
-    for (i = 0; i < min(alpha.gene.length, beta.gene.length, delta.gene.length); i++) {
-        newLength = (alpha.gene.length + beta.gene.length + delta.gene.length) / 3;
-        newX = (alpha.gene.x + beta.gene.x + delta.gene.x) / 3;
-        newY = (alpha.gene.y + beta.gene.y + delta.gene.y) / 3;
-        newGene.add(new Vector(newLength, newX, newY))
-    }
+    return newGene;
 }
 
 function kill(particle) {
-    particle.score = scoreParticle(particle)
+    var index = array.indexOf(particle);
+    var i = generation.indexOf(activeGeneration.splice(index, 1));
+
+    generation[i].score = scoreParticle(particle);
+}
+
+function target() {
+    this.x = 1000;
+    this.y = 1000;
+}
+function scoreParticle(particle) {
+    return Math.abs(particle.x - target.x) + Math.abs(particle.y - target.y)
+}
+
+function updateParticles() {
+    while (1){
+        if (activeGeneration.length === 0) {
+            spawnGeneration(10);
+        }
+        var timeInterval = 0;
+        while (activeGeneration.length !== 0) {
+            timeInterval ++;
+            for (var i = 0; i < activeGeneration.length; i++) {
+                var particle = activeGeneration[i];
+                updateParticlePosition(particle, timeInterval);
+            }
+        }
+    }
+}
+
+screenBoundsX = 1000;
+screenBoundsY = 1000;
+function updateParticlePosition(particle, timeInterval) {
+    var q = timeInterval;
+    var index = 0;
+    while (q > 0 && index < particle.gene.length) {
+        var vector = particle.gene[index];
+        if (vector.time < q) {
+            q -= vector.time;
+            index ++;
+        }
+    }
+    if (collision(particle)) {
+        kill(particle)
+    } else {
+
+    }
+}
+
+function collision() {
 
 }
 
-function scoreParticle() {
-
-}
+updateParticles();
