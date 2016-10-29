@@ -70,18 +70,18 @@ function mutateGene(geneBase, mutationRate) {
             var rand = Math.random();
             var variance = 3;
             if (rand < .3) { // change duration
-                time = bound(0, 10, getRandomArbitrary(time - variance, time + variance))
+                time = bound(0, 10, getRandomArbitrary(time - variance, time + variance));
+                newGene.push(new Vector(time, x, y));
             } else if (rand < .55) { //change x direction
-                x = getRandomArbitrary(x - variance, x + variance)
+                x = getRandomArbitrary(x - variance, x + variance);
+                newGene.push(new Vector(time, x, y));
             } else if (rand < .8) { //change y direction
-                y = getRandomArbitrary(y - variance, y + variance)
+                y = getRandomArbitrary(y - variance, y + variance);
+                newGene.push(new Vector(time, x, y));
             } else if (rand < .9) { //insert new random direction
-                newGene.push(getRandomVector())
-            } else { //remove random direction
-                if (newGene.length > 0) {
-                    newGene.pop()
-                }
-            }
+                newGene.push(getRandomVector());
+                newGene.push(new Vector(time, x, y));
+            } //otherwise remove vector
         }
         newGene.push(new Vector(time, x, y))
     }
@@ -175,7 +175,7 @@ function updateParticles(lines, startX, startY, targetX, targetY) {
 
 
     target = new Target(targetX, targetY);
-    if (activeGeneration.length === 0 || timeInterval > 150) {
+    if (activeGeneration.length === 0 || timeInterval > 100) {
         for (particle in activeGeneration) {
             kill(activeGeneration[particle])
         }
