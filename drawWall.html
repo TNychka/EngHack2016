@@ -1,4 +1,5 @@
 <script src="processing.js"></script>
+<script src="AI.js"></script>
 <script type="text/processing" data-processing-target="mycanvas">
 // Global variables
 function Line(x1, y1, x2, y2) {
@@ -53,16 +54,13 @@ void draw(){
 
 
 
-var particles = AI.updateParticles(lines);
-
+var particles = updateParticles(lines);
   for(int i = 0; i < particles.length(); i++){
-    
       stroke(127,255,80);
       strokeWeight(3);
       ellipse(particles[i].x ,particles[i].y,5,5);
   }
-    
-  }
+}
 
 
 // Set circle's next destination

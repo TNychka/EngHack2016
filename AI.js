@@ -33,7 +33,7 @@ function spawnGeneration(size) {
         var geneBase = breed(generation);
         activeGeneration = [];
         for (i = 0; i < size; i++) {
-            gene = mutateGene(geneBase, .2);
+            gene = mutateGene(geneBase, 0.2);
             activeGeneration.push(new Particle(10, gene));
         }
     }
@@ -45,7 +45,7 @@ function getRandomArbitrary(min, max) {
 }
 
 function getRandomVector() {
-    var time = getRandomArbitrary(1, 10);
+    var time = getRandomArbitrary(1, 100);
     var x = getRandomArbitrary(-10, 10);
     var y = getRandomArbitrary(-10, 10);
     return new Vector(time, x, y)
@@ -79,13 +79,14 @@ function mutateGene(geneBase, mutationRate) {
             } else if (rand < .98) { //insert new random direction
                 newGene.push(getRandomVector())
             } else { //remove random direction
-                if (newGene.time > 0) {
+                if (newGene.length > 0) {
                     newGene.pop()
                 }
             }
         }
         newGene.push(new Vector(time, x, y))
     }
+    return newGene
 }
 
 //can enable extra breeding particle if desired. Just uncomment the not comments
@@ -142,10 +143,10 @@ function breed(generation) {
     return newGene;
 }
 
-function kill(particle) {
+function kill(particle, timeIndex) {
     var index = activeGeneration.indexOf(particle);
     activeGeneration.splice(index, 1);
-    particle.score = scoreParticle(particle);
+    particle.score = scoreParticle(particle, timeIndex);
     generation.push(particle);
 }
 
@@ -154,15 +155,8 @@ function Target() {
     this.y = 1000;
 }
 var target = new Target();
-function scoreParticle(particle) {
-    return Math.abs(particle.x - target.x) + Math.abs(particle.y - target.y)
-}
-
-function Line(x1, y1, x2, y2) {
-    this.x1 = x1;
-    this.y1 = y1;
-    this.x2 = x2;
-    this.y2 = y2;
+function scoreParticle(particle, timeIndex) {
+    return (target.x - Math.abs(particle.x - target.x)) + (target.y - Math.abs(particle.y - target.y)) + 10000 - timeIndex
 }
 
 function updateParticles(lines) {
@@ -174,15 +168,18 @@ function updateParticles(lines) {
         timeInterval++;
         for (var i = 0; i < activeGeneration.length; i++) {
             var particle = activeGeneration[i];
-            updateParticlePosition(particle, timeInterval, lines);
+            updateParticlePosition(particle, timeInterval, lines, timeInterval);
         }
     }
-    return activeGeneration
+    var newParticle = new Particle(10, []);
+    newParticle.x ++;
+    newParticle.y ++;
+    return newParticle
 }
 
 screenBoundsX = 1000;
 screenBoundsY = 1000;
-function updateParticlePosition(particle, timeInterval, lines) {
+function updateParticlePosition(particle, timeInterval, lines, timeIndex) {
     var q = timeInterval;
     var index = 0;
     var vector = particle.gene[index];
@@ -194,7 +191,7 @@ function updateParticlePosition(particle, timeInterval, lines) {
             break;
         }
         if (index >= particle.gene.length) {
-            kill(particle);
+            kill(particle, timeIndex);
             q = 0;
         }
     }
@@ -203,7 +200,7 @@ function updateParticlePosition(particle, timeInterval, lines) {
     if (activeGeneration.indexOf(particle) === -1) {
         //doesn't exist don't do anything
     } else if (collision(particle, vector, lines) || newX < screenBoundsX || newX > screenBoundsX || newY < screenBoundsY || newY > screenBoundsY) {
-        kill(particle);
+        kill(particle, timeIndex);
     } else {
         particle.x = newX;
         particle.y = newY;
@@ -243,4 +240,20 @@ function line_intersects(p0_x, p0_y, p1_x, p1_y, p2_x, p2_y, p3_x, p3_y) {
     return (s >= 0 && s <= 1 && t >= 0 && t <= 1)
 }
 
-//updateParticles();
+
+function Line(x1, y1, x2, y2) {
+    this.x1 = x1;
+    this.y1 = y1;
+    this.x2 = x2;
+    this.y2 = y2;
+}
+
+var generationIndex = 0
+while (1) {
+    generationIndex++;
+    var newParticle = new Particle(10, []);
+    newParticle.x ++;
+    newParticle.y ++;
+    var test = [newParticle]//updateParticles([new Line(100, 100, 200, 200)]);
+    test
+}
