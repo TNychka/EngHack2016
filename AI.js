@@ -45,7 +45,7 @@ function getRandomArbitrary(min, max) {
 }
 
 function getRandomVector() {
-    var time = getRandomArbitrary(1, 10);
+    var time = getRandomArbitrary(1, 100);
     var x = getRandomArbitrary(-10, 10);
     var y = getRandomArbitrary(-10, 10);
     return new Vector(time, x, y)
@@ -156,14 +156,22 @@ function Target() {
 }
 var target = new Target();
 function scoreParticle(particle) {
-    return Math.abs(particle.x - target.x) + Math.abs(particle.y - target.y)
+    return (target.x - Math.abs(particle.x - target.x)) + (target.y - Math.abs(particle.y - target.y))
 }
 
-function updateParticles() {
-        if (activeGeneration.length === 0) {
-            spawnGeneration(10);
+function updateParticles(lines) {
+    if (activeGeneration.length === 0) {
+        spawnGeneration(10);
+    }
+    var timeInterval = 0;
+    while (activeGeneration.length !== 0) {
+        timeInterval++;
+        for (var i = 0; i < activeGeneration.length; i++) {
+            var particle = activeGeneration[i];
+            updateParticlePosition(particle, timeInterval, lines);
         }
     }
+
     return activeGeneration
 }
 
@@ -238,6 +246,8 @@ function Line(x1, y1, x2, y2) {
     this.y2 = y2;
 }
 
+var generationIndex = 0
 while (1) {
+    generationIndex++
     updateParticles([new Line(100, 100, 200, 200)]);
 }
